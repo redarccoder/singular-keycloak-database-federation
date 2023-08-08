@@ -7,6 +7,7 @@ This repository was originaly created by OpenSingular at [singular-keycloak-data
 ## Usage
 
 Fully compatible with Singular Studio NOCODE. See https://www.studio.opensingular.com/
+
 ## Configuration
 
 Keycloak User Federation Screen Shot
@@ -22,6 +23,8 @@ This option can be configured by the following switch:
 
 - Do not allow user information update, including password update
 - Do not supports user roles our groups
+- Keycloak must use a non-XA datasource
+
 ## Custom attributes
 
 Just add a mapper to client mappers with the same name as the returned column alias in your queries.Use mapper type "User Attribute". See the example below:
@@ -31,15 +34,17 @@ Just add a mapper to client mappers with the same name as the returned column al
 ## Build
 
 - mvn clean package
+
 ## Deployment
 
-1) Copy every  `.jar` from dist/ folder  to  /providers folder under your keycloak installation root. 
-    - i.e, on a default keycloak setup, copy all  `.jar` files to <keycloak_root_dir>/providers
+1) Copy every  `.jar` from dist/ folder  to  /providers folder under your keycloak installation root.
+   - i.e, on a default keycloak setup, copy all  `.jar` files to <keycloak_root_dir>/providers
 2) run :
-    $ ./bin/kc.sh start-dev
-OR if you are using a production configuration:
-    $ ./bin/kc.sh build
-    $ ./bin/kc.sh start
+   $ ./bin/kc.sh start-dev
+   OR if you are using a production configuration:
+   $ ./bin/kc.sh build
+   $ ./bin/kc.sh start
+
 ## For futher information see:
 
 - https://github.com/keycloak/keycloak/issues/9833

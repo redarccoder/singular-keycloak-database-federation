@@ -212,7 +212,7 @@ public class DBUserStorageProvider implements UserStorageProvider,
         Integer maxResults)
     {
         log.infov("search for users with params: realm={0} params={1}", realm.getId(), params);
-        return internalSearchForUser(params.values().stream().findFirst().orElse(null), realm, null);
+        return internalSearchForUser(params.values().stream().filter(s -> s.contains("keycloak.session.realm.users.query.search")).findFirst().orElse(null), realm, null);
     }
     
     @Override
