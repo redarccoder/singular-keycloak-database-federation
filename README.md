@@ -24,6 +24,7 @@ This option can be configured by the following switch:
 - Do not allow user information update, including password update
 - Do not supports user roles our groups
 - Keycloak must use a non-XA datasource
+- User management is expeted on the BD Side, most add columns for emailValidation and enabled fields (if not use a view)
 
 ## Custom attributes
 

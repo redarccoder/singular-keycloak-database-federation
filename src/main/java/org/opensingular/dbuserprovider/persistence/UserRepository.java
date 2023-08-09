@@ -56,7 +56,8 @@ public class UserRepository {
         this.queryConfigurations = queryConfigurations;
     }
 
-    private <T> T doQuery(String query, Pageable pageable, Function<ResultSet, T> resultTransformer, Object... params) {
+    private <T> T doQuery(String query, Pageable pageable, boolean likeQuery, Function<ResultSet, T> resultTransformer,
+            Object... params) {
         Optional<DataSource> dataSourceOpt = dataSourceProvider.getDataSource();
         if (dataSourceOpt.isPresent()) {
             DataSource dataSource = dataSourceOpt.get();
@@ -68,14 +69,23 @@ public class UserRepository {
                 try (PreparedStatement statement = c.prepareStatement(query)) {
                     if (params != null) {
                         for (int i = 1; i <= params.length; i++) {
-                            statement.setObject(i, params[i - 1]);
+                            String param = (String) params[i - 1];
+                            if (likeQuery)
+                                statement.setString(i, "%" + param.toUpperCase() + "%");
+                            else
+                                statement.setString(i, param.toUpperCase());
                         }
                     }
                     try (ResultSet rs = statement.executeQuery()) {
+                        log.infov("RS: {0}", rs);
                         return resultTransformer.apply(rs);
+                    } catch (SQLException e) {
+                        log.infov("Error: {0}", e.getMessage());
+                        log.error(e.getMessage(), e);
                     }
                 }
             } catch (SQLException e) {
+                log.infov("Error: {0}", e.getMessage());
                 log.error(e.getMessage(), e);
             }
             return null;
@@ -129,15 +139,15 @@ public class UserRepository {
     }
 
     public List<Map<String, String>> getAllUsers() {
-        return doQuery(queryConfigurations.getListAll(), null, this::readMap);
+        return doQuery(queryConfigurations.getListAll(), null, false, this::readMap);
     }
 
     public int getUsersCount(String search) {
         if (search == null || search.isEmpty()) {
-            return Optional.ofNullable(doQuery(queryConfigurations.getCount(), null, this::readInt)).orElse(0);
+            return Optional.ofNullable(doQuery(queryConfigurations.getCount(), null, false, this::readInt)).orElse(0);
         } else {
             String query = String.format("select count(*) from (%s) count", queryConfigurations.getFindBySearchTerm());
-            return Optional.ofNullable(doQuery(query, null, this::readInt, searchTermParams(search))).orElse(0);
+            return Optional.ofNullable(doQuery(query, null, false, this::readInt, searchTermParams(search))).orElse(0);
         }
     }
 
@@ -152,33 +162,35 @@ public class UserRepository {
     }
 
     public Map<String, String> findUserById(String id) {
-        return Optional.ofNullable(doQuery(queryConfigurations.getFindById(), null, this::readMap, id))
+        return Optional.ofNullable(doQuery(queryConfigurations.getFindById(), null, false, this::readMap, id))
                 .orElse(Collections.emptyList())
                 .stream().findFirst().orElse(null);
     }
 
     public Optional<Map<String, String>> findUserByUsername(String username) {
-        return Optional.ofNullable(doQuery(queryConfigurations.getFindByUsername(), null, this::readMap, username))
+        return Optional
+                .ofNullable(doQuery(queryConfigurations.getFindByUsername(), null, false, this::readMap, username))
                 .orElse(Collections.emptyList())
                 .stream().findFirst();
     }
 
     public Optional<Map<String, String>> findUserByEmail(String email) {
-        return Optional.ofNullable(doQuery(queryConfigurations.getFindByEmail(), null, this::readMap, email))
+        return Optional.ofNullable(doQuery(queryConfigurations.getFindByEmail(), null, false, this::readMap, email))
                 .orElse(Collections.emptyList())
                 .stream().findFirst();
     }
 
     public List<Map<String, String>> findUsers(String search, PagingUtil.Pageable pageable) {
         if (search == null || search.isEmpty()) {
-            return doQuery(queryConfigurations.getListAll(), pageable, this::readMap);
+            return doQuery(queryConfigurations.getListAll(), pageable, false, this::readMap);
         }
-        return doQuery(queryConfigurations.getFindBySearchTerm(), pageable, this::readMap, searchTermParams(search));
+        return doQuery(queryConfigurations.getFindBySearchTerm(), pageable, true, this::readMap,
+                searchTermParams(search));
     }
 
     public boolean validateCredentials(String username, String password) {
         String hash = Optional
-                .ofNullable(doQuery(queryConfigurations.getFindPasswordHash(), null, this::readString, username))
+                .ofNullable(doQuery(queryConfigurations.getFindPasswordHash(), null, false, this::readString, username))
                 .orElse("");
         if (queryConfigurations.isBlowfish()) {
             return !hash.isEmpty() && BCrypt.checkpw(password, hash);
