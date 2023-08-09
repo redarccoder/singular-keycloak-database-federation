@@ -244,6 +244,7 @@ public class DBUserStorageProvider implements UserStorageProvider,
     }
 
     private Stream<UserModel> internalSearchForUser(String search, RealmModel realm, PagingUtil.Pageable pageable) {
+        log.infov("internalSearchForUser: {0}", search);
         return toUserModel(realm, repository.findUsers(search, pageable));
     }
 
