@@ -28,7 +28,9 @@ This option can be configured by the following switch:
 
 ## Custom attributes
 
-Just add a mapper to client mappers with the same name as the returned column alias in your queries.Use mapper type "User Attribute". See the example below:
+All additional columns returned by the query are available as user attributes in keycloak.
+
+In order to provide them to applications just add a mapper to client mappers with the same name as the returned column alias in your queries.Use mapper type "User Attribute". See the example below:
 
 ![Sample Screenshot 2](screen2.png)
 
