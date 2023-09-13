@@ -30,6 +30,13 @@ public class DBUserStorageProviderFactory implements UserStorageProviderFactory<
                         "            \"firstName\" (optional)," +
                         "            \"lastName\" (optional). Any other parameter can be mapped by aliases to a realm scope";
         private static final String PARAMETER_HELP = " The %s is passed as query parameter.";
+        public static final String SELECT_COLUMNS = "select \"id\"," +
+                "            \"username\"," +
+                "            \"email\"," +
+                "            \"firstName\"," +
+                "            \"lastName\"," +
+                "            \"cpf\"," +
+                "            \"fullName\" from users ";
 
         private Map<String, ProviderConfig> providerConfigPerInstance = new HashMap<>();
 
@@ -159,7 +166,7 @@ public class DBUserStorageProviderFactory implements UserStorageProviderFactory<
                                 .name("forceAllUppercase")
                                 .label("Force all values in database to uppercase")
                                 .helpText(
-                                        "Convert all values passed to database to uppercase by default.")
+                                        "Convert all values passed to database to uppercase by default. If set please adjust query accordingly.")
                                 .type(ProviderConfigProperty.BOOLEAN_TYPE)
                                 .defaultValue("false")
 
@@ -178,13 +185,7 @@ public class DBUserStorageProviderFactory implements UserStorageProviderFactory<
                                 .label("List All Users SQL query")
                                 .helpText(DEFAULT_HELP_TEXT)
                                 .type(ProviderConfigProperty.STRING_TYPE)
-                                .defaultValue("select \"id\"," +
-                                                "            \"username\"," +
-                                                "            \"email\"," +
-                                                "            \"firstName\"," +
-                                                "            \"lastName\"," +
-                                                "            \"cpf\"," +
-                                                "            \"fullName\" from users ")
+                                .defaultValue(SELECT_COLUMNS)
 
                                 .add()
                                 .property()
@@ -193,13 +194,7 @@ public class DBUserStorageProviderFactory implements UserStorageProviderFactory<
                                 .helpText(DEFAULT_HELP_TEXT + String.format(PARAMETER_HELP, "user id")
                                                 + PARAMETER_PLACEHOLDER_HELP)
                                 .type(ProviderConfigProperty.STRING_TYPE)
-                                .defaultValue("select \"id\"," +
-                                                "            \"username\"," +
-                                                "            \"email\"," +
-                                                "            \"firstName\"," +
-                                                "            \"lastName\"," +
-                                                "            \"cpf\"," +
-                                                "            \"fullName\" from users where \"id\" = ? ")
+                                .defaultValue(SELECT_COLUMNS + " where \"id\" = ? ")
 
                                 .add()
                                 .property()
@@ -209,13 +204,7 @@ public class DBUserStorageProviderFactory implements UserStorageProviderFactory<
                                                 DEFAULT_HELP_TEXT + String.format(PARAMETER_HELP, "user username")
                                                                 + PARAMETER_PLACEHOLDER_HELP)
                                 .type(ProviderConfigProperty.STRING_TYPE)
-                                .defaultValue("select \"id\"," +
-                                                "            \"username\"," +
-                                                "            \"email\"," +
-                                                "            \"firstName\"," +
-                                                "            \"lastName\"," +
-                                                "            \"cpf\"," +
-                                                "            \"fullName\" from users where \"username\" = ? ")
+                                .defaultValue(SELECT_COLUMNS + " where \"username\" = ? ")
 
                                 .add()
                                 .property()
@@ -224,13 +213,7 @@ public class DBUserStorageProviderFactory implements UserStorageProviderFactory<
                                 .helpText(DEFAULT_HELP_TEXT + String.format(PARAMETER_HELP, "user email")
                                                 + PARAMETER_PLACEHOLDER_HELP)
                                 .type(ProviderConfigProperty.STRING_TYPE)
-                                .defaultValue("select \"id\"," +
-                                                "            \"username\"," +
-                                                "            \"email\"," +
-                                                "            \"firstName\"," +
-                                                "            \"lastName\"," +
-                                                "            \"cpf\"," +
-                                                "            \"fullName\" from users where \"email\" = ? ")
+                                .defaultValue(SELECT_COLUMNS + " where \"email\" = ? ")
 
                                 .add()
                                 .property()
@@ -239,13 +222,7 @@ public class DBUserStorageProviderFactory implements UserStorageProviderFactory<
                                 .helpText(DEFAULT_HELP_TEXT + String.format(PARAMETER_HELP, "search term")
                                                 + PARAMETER_PLACEHOLDER_HELP)
                                 .type(ProviderConfigProperty.STRING_TYPE)
-                                .defaultValue("select \"id\"," +
-                                                "            \"username\"," +
-                                                "            \"email\"," +
-                                                "            \"firstName\"," +
-                                                "            \"lastName\"," +
-                                                "            \"cpf\"," +
-                                                "            \"fullName\" from users where upper(\"username\") like (?)  or upper(\"email\") like (?) or upper(\"fullName\") like (?)")
+                                .defaultValue(SELECT_COLUMNS + "where \"username\" like (?)  or \"email\" like (?) or \"fullName\" like (?)")
 
                                 .add()
                                 .property()
