@@ -20,9 +20,7 @@ import org.opensingular.dbuserprovider.persistence.DataSourceProvider;
 import org.opensingular.dbuserprovider.persistence.UserRepository;
 import org.opensingular.dbuserprovider.util.PagingUtil;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 @JBossLog
@@ -160,7 +158,6 @@ public class DBUserStorageProvider implements UserStorageProvider,
     public UserModel getUserByUsername(RealmModel realm, String username) {
 
         log.infov("lookup user by username: realm={0} username={1}", realm.getId(), username);
-
         return repository.findUserByUsername(username)
                 .map(u -> new UserAdapter(session, realm, model, u, allowDatabaseToOverwriteKeycloak,
                         userConfiguration))

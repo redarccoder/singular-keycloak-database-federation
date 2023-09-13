@@ -16,10 +16,11 @@ public class QueryConfigurations {
     private final RDBMS RDBMS;
     private final boolean allowKeycloakDelete;
     private final boolean allowDatabaseToOverwriteKeycloak;
+    private final boolean forceAllUppercase;
 
     public QueryConfigurations(String count, String listAll, String findById, String findByUsername, String findByEmail,
-            String findBySearchTerm, String findPasswordHash, String hashFunction,
-            RDBMS RDBMS, boolean allowKeycloakDelete, boolean allowDatabaseToOverwriteKeycloak) {
+                               String findBySearchTerm, String findPasswordHash, String hashFunction,
+                               RDBMS RDBMS, boolean allowKeycloakDelete, boolean allowDatabaseToOverwriteKeycloak, boolean forceAllUppercase) {
         this.count = count;
         this.listAll = listAll;
         this.findById = findById;
@@ -32,6 +33,7 @@ public class QueryConfigurations {
         this.RDBMS = RDBMS;
         this.allowKeycloakDelete = allowKeycloakDelete;
         this.allowDatabaseToOverwriteKeycloak = allowDatabaseToOverwriteKeycloak;
+        this.forceAllUppercase = forceAllUppercase;
     }
 
     public RDBMS getRDBMS() {
@@ -88,5 +90,9 @@ public class QueryConfigurations {
 
     public boolean getAllowDatabaseToOverwriteKeycloak() {
         return allowDatabaseToOverwriteKeycloak;
+    }
+
+    public boolean getForceAllUppercase() {
+        return forceAllUppercase;
     }
 }
