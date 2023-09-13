@@ -28,7 +28,7 @@ public class DBUserStorageProviderFactory implements UserStorageProviderFactory<
                         "            \"username\"," +
                         "            \"email\" (optional)," +
                         "            \"firstName\" (optional)," +
-                        "            \"lastName\" (optional). Any other parameter can be mapped by aliases to a realm scope";
+                        "            \"lastName\" (optional). Any extra parameters are mapped to attributes.";
         private static final String PARAMETER_HELP = " The %s is passed as query parameter.";
         public static final String SELECT_COLUMNS = "select \"id\"," +
                 "            \"username\"," +
@@ -36,7 +36,11 @@ public class DBUserStorageProviderFactory implements UserStorageProviderFactory<
                 "            \"firstName\"," +
                 "            \"lastName\"," +
                 "            \"cpf\"," +
-                "            \"fullName\" from users ";
+                "            \"fullName\"" +
+                "            \"mailVerified\"" +
+                "            \"enabled\"" +
+                "            \"groups\"" +
+                " from users ";
 
         private Map<String, ProviderConfig> providerConfigPerInstance = new HashMap<>();
 
