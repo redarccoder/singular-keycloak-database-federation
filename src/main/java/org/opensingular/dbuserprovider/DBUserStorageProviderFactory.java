@@ -36,9 +36,9 @@ public class DBUserStorageProviderFactory implements UserStorageProviderFactory<
                 "            \"firstName\"," +
                 "            \"lastName\"," +
                 "            \"cpf\"," +
-                "            \"fullName\"" +
-                "            \"mailVerified\"" +
-                "            \"enabled\"" +
+                "            \"fullName\"," +
+                "            \"mailVerified\"," +
+                "            \"enabled\"," +
                 "            \"groups\"" +
                 " from users ";
 
