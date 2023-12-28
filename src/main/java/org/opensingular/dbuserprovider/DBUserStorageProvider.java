@@ -196,21 +196,6 @@ public class DBUserStorageProvider implements UserStorageProvider,
     }
 
     @Override
-    public int getUsersCount(RealmModel realm, Map<String, String> params) {
-        return repository.getUsersCount(null);
-    }
-
-    @Override
-    public int getUsersCount(RealmModel realm, Map<String, String> params, Set<String> groupIds) {
-        return repository.getUsersCount(null);
-    }
-
-    @Override
-    public int getUsersCount(RealmModel realm, boolean includeServiceAccount) {
-        return repository.getUsersCount(null);
-    }
-
-    @Override
     public Stream<UserModel> searchForUserStream(RealmModel realm, String search, Integer firstResult,
             Integer maxResults) {
         log.infov("list users: realm={0} firstResult={1} maxResults={2}", realm.getId(), firstResult, maxResults);
@@ -235,7 +220,11 @@ public class DBUserStorageProvider implements UserStorageProvider,
             Integer maxResults) {
         log.infov("search for group members with params: realm={0} groupId={1} firstResult={2} maxResults={3}",
                 realm.getId(), group.getId(), firstResult, maxResults);
-        return Stream.empty();
+        /* we do a not-so-efficient implementation here as we try to minimize number of queries */
+        return internalSearchForUser(null, realm, new PagingUtil.Pageable(0, -1))
+                .filter(
+                        userModel -> userModel.getGroupsStream().anyMatch(
+                                groupModel -> groupModel.equals(group)));
     }
 
     private Stream<UserModel> internalSearchForUser(String search, RealmModel realm, PagingUtil.Pageable pageable) {
