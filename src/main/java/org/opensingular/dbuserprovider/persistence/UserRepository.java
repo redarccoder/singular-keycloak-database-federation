@@ -70,10 +70,8 @@ public class UserRepository {
                     if (params != null) {
                         for (int i = 1; i <= params.length; i++) {
                             String param = (String) params[i - 1];
-                            if (likeQuery)
-                                statement.setString(i, "%" + param.toUpperCase() + "%");
-                            else
-                                statement.setString(i, param.toUpperCase());
+                            final String paramCaseFixed = queryConfigurations.getForceAllUppercase() ? param.toUpperCase() : param;
+                            statement.setString(i, likeQuery ? "%" + paramCaseFixed + "%" : paramCaseFixed);
                         }
                     }
                     try (ResultSet rs = statement.executeQuery()) {

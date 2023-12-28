@@ -3,21 +3,22 @@ package org.opensingular.dbuserprovider.model;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.commons.lang3.StringUtils;
 import org.keycloak.component.ComponentModel;
+import org.keycloak.models.GroupModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
+import org.keycloak.models.utils.KeycloakModelUtils;
 import org.keycloak.storage.StorageId;
 import org.keycloak.storage.adapter.AbstractUserAdapterFederatedStorage;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @JBossLog
 public class UserAdapter extends AbstractUserAdapterFederatedStorage {
+    public static final String GROUPS_ATTRIBUTE = "groups";
+    public static final String GROUPS_DELIMITER = ",";
     private final UserConfiguration userConfiguration;
     private final String keycloakId;
     private final Map<String, String> data;
@@ -63,22 +64,40 @@ public class UserAdapter extends AbstractUserAdapterFederatedStorage {
         this.username = username;
     }
 
+    private static boolean isTrueish(String s) {
+        return s != null && (s.equals("1") || s.toLowerCase().startsWith("t"));
+    }
     @Override
     public boolean isEnabled() {
         String enabled = this.data.get(this.userConfiguration.getEnabled());
-        log.infov("IsEnabled: {0}", enabled);
-        if (enabled.equals("1") || enabled.toLowerCase().equals("true"))
-            return true;
-        return false;
+        log.infov("isEnabled: {0}", enabled);
+        return isTrueish(enabled);
     }
 
     @Override
     public boolean isEmailVerified() {
         String emailVerified = this.data.get(this.userConfiguration.getEmailVerified());
         log.infov("emailVerified: {0}", emailVerified);
-        if (emailVerified.equals("1") || emailVerified.toLowerCase().equals("true"))
-            return true;
-        return false;
+        return isTrueish(emailVerified);
     }
+
+    private String[] getLocalGroupNames() {
+        return Objects.requireNonNullElse(this.data.get(GROUPS_ATTRIBUTE), "")
+                .split(GROUPS_DELIMITER);
+    }
+
+    @Override
+    protected Set<GroupModel> getGroupsInternal() {
+        final Set<GroupModel> groups = super.getGroupsInternal();
+        final String[] localGroupNames = getLocalGroupNames();
+
+        if (localGroupNames.length > 0 ) {
+            final Set<GroupModel> allGroups = Arrays.stream(localGroupNames).map(groupName -> KeycloakModelUtils.findGroupByPath(realm, groupName)).filter(Objects::nonNull).collect(Collectors.toSet());
+            allGroups.addAll(groups);
+            return allGroups;
+        } else {
+            return groups;
+        }
+}
 
 }
