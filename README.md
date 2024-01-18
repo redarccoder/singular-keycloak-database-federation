@@ -1,8 +1,8 @@
 # singular-keycloak-database-federation
 
-## IMPORTANT !!
-
-This repository was originally created by OpenSingular at [singular-keycloak-databas-federation](https://github.com/opensingular/singular-keycloak-database-federationhttps:/) but the project has been dead since a few months ago. If you want me to take down this repository just let me know in a issue on this repo.
+## Status
+This fork is currently maintained (checked working for Keycloak 22 and 23, for older versions of Keycloak see branch `keycloak-21`).
+This repository was originally created by OpenSingular at [singular-keycloak-databas-federation](https://github.com/opensingular/singular-keycloak-database-federationhttps:/), then continued at  <https://github.com/redarccoder/singular-keycloak-database-federation> and now here.
 
 ## Usage
 
